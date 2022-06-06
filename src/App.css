@@ -1,0 +1,8 @@
+.App {
+  display: grid;
+  text-align: center;
+  width: 60rem;
+  height: 60rem;
+  border: 1px solid #ccc;
+
+}

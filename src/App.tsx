@@ -34,7 +34,6 @@ function App() {
       setGameState(true);
       setDisabled(false);
     }
-
   }
   useEffect(() => {
     winState.forEach(state => {

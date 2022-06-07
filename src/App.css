@@ -1,8 +1,47 @@
-.App {
-  display: grid;
-  text-align: center;
-  width: 60rem;
-  height: 60rem;
-  border: 1px solid #ccc;
+#root {
+  height: 100vh;
+  width: 100vw;
+}
 
+.app {
+  text-align: center;
+  width: 30rem;
+  height: 30rem;
+  margin: auto;
+}
+
+.title {
+  font-size: 1.5rem;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+}
+
+.board {
+  display: grid;
+  margin-top: 10rem;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-gap: 1px;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ccc;
+  background-color: #eee;
+  align-items: center
+}
+
+.square {
+  height: 100%;
+  width: 100%;
+  border: 2px solid #ccc;
+  background-color: #eee;
+}
+
+.letter {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+  font-size: 5rem;
+  height: 100%;
+  color: rgb(75, 74, 74);
 }

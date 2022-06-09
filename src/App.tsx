@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
-const ENDPOINT: any = process.env.REACT_APP_SOCKET_URL;
 import './App.css';
 
-
+const ENDPOINT: any = process.env.REACT_APP_SOCKET_URL;
 const defaultBoard = ["", "", "", "", "", "", "", "", ""];
 const winState = [
   [0, 1, 2],

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
+const ENDPOINT: any = process.env.REACT_APP_SOCKET_URL;
 import './App.css';
 
 
@@ -63,7 +64,7 @@ function App() {
     roomInput && socket.emit("join", roomInput);
   }
   useEffect((): (() => void) => {
-    const newSocket = socketIOClient("http://localhost:3001");
+    const newSocket = socketIOClient(ENDPOINT);
     setSocket(newSocket);
     newSocket.on("onMessage", data => {
       setTurn(data.turn);

@@ -15,15 +15,15 @@ io.on("connection", socket => {
     let gameState = []
     console.log(socket.id + ' ==== connected');
     socket.on('join', roomData => {
-        console.log(roomData)
-        Array.from(socket.rooms)
-            .filter(it => it !== socket.id)
-            .forEach(id => {
-                socket.leave(id);
-                socket.removeAllListeners("emitMessage");
-            });
+        // Array.from(socket.rooms)
+        //     .filter(it => it !== socket.id)
+        //     .forEach(id => {
+        //         socket.leave(id);
+        //         socket.removeAllListeners("emitMessage");
+        //     });
         socket.join(roomData);
         console.log("Joined room: " + roomData);
+        console.log(socket.rooms)
         socket.on("emitMessage", message => {
             Array.from(socket.rooms)
                 .filter(it => it !== socket.id)

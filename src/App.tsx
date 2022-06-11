@@ -1,16 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import socketIOClient from 'socket.io-client';
 import { 
-  useToken,
   useClipboard, 
-  Flex,
   Input,
   Button,
-  Editable,
-  EditableInput,
-  EditablePreview,
-  Box,
-  Code
+
 } from '@chakra-ui/react'
 import './App.css';
 
@@ -26,54 +20,51 @@ const winState = [
   [0, 4, 8],
   [2, 4, 6]
 ]
+type lobbyType = {
+  room: string,
+  players: Array<string>,
+  gameState: typeof defaultBoard,
+  turn: string,
+}
 
 const App : React.FC =()=> {
+  const inputRef = useRef<HTMLInputElement | any>(null);
   const [socket, setSocket] = React.useState<any>(null);
-  const [gameState, setGameState] = React.useState<boolean | null>(null);
-  const [board, setBoard] = React.useState<string[]>(defaultBoard);
   const [turn, setTurn] = React.useState("x");
   const [winner, setWinner] = React.useState("");
-  const [disabled, setDisabled] = React.useState(true);
-  const [room, setRoom] = React.useState("");
+  const [room, setRoom] = React.useState<string>("");
   const [roomInput, setRoomInput] = React.useState("");
   const [playerMove, setPlayerMove] = React.useState("");
-
+  const [lobby, setLobby] = React.useState<lobbyType>();
   const { hasCopied, onCopy } = useClipboard(room)
-
 
   const onHandleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     let id = e.currentTarget.id;
-    if (turn === playerMove) {
-      let newBoard = [...board];
+    console.log(lobby)
+    if (lobby?.turn === playerMove && lobby?.players.length === 2) {
+      
+      let newBoard = [...lobby.gameState];
       if (newBoard[parseInt(id)] === "" && winner === "") {
-        newBoard[parseInt(id)] = turn;
+        newBoard[parseInt(id)] = lobby.turn;
       }
-      setBoard(newBoard);
-      var data = {
-        turn: playerMove === "x" ? "o" : "x",
-        board: newBoard
-      }
+      lobby["gameState"] = newBoard;
+      lobby["turn"] = playerMove === "x" ? "o" : "x";
       setTurn(playerMove === "x" ? "o" : "x");
-      socket.emit("emitMessage", data);
+      socket.emit("emitMessage", lobby);
     }
   };
 
-  const onHandleStartGame = () => {
-    if (gameState === true || disabled === false) {
-      setBoard(defaultBoard)
-      setWinner("")
-    } else {
-      setGameState(true);
-      setDisabled(false);
-    }
-  }
-
   const onSocketMakeRoom = () => {
+    
     const id = Math.random().toString(36).substr(2, 9);
+    console.log(inputRef.current)
+    if (inputRef.current) {
+      inputRef.current = id;
+    }
     setRoom(id)
     setPlayerMove("x")
     setTurn("x")
-    socket.emit("join", id);
+    socket.emit("create", id);
   }
 
   const onSocketJoinRoom = () => {
@@ -86,40 +77,41 @@ const App : React.FC =()=> {
     const newSocket = socketIOClient(ENDPOINT);
     setSocket(newSocket);
     newSocket.on("onMessage", data => {
+      setLobby(data)
       setTurn(data.turn);
-      setBoard(data.board);
     });
     return () => newSocket.disconnect();
   }, []);
 
   useEffect(() => {
     winState.forEach(state => {
-      state.every(i => board[i] === "x") && setWinner("x");
+      state.every(i => lobby?.gameState[i] === "x") && setWinner("x");
     })
     winState.forEach(state => {
-      state.every(i => board[i] === "o") && setWinner("o");
+      state.every(i => lobby?.gameState[i] === "o") && setWinner("o");
     })
-  }, [board, turn]);
+  }, [lobby, turn]);
   return (
     <div className="app">
       <h1 className="title">Tic Tac Toe MMO</h1>
       <h3>{winner && `Player ${winner} wins`}</h3>
-      {/* <p> {room && `Player ${turn.toUpperCase()} turn`}</p> */}
-      <p>Lobby 0/2</p>
-      <div className="board">
-        {board.map((row, index) => {
-          return <button className="square" disabled={false} key={index} onClick={onHandleClick} id={index.toString()}>
-            <span className="letter">
-              {row}
-            </span>
-          </button>
-        })}
-      </div>
+      <p> {room && `Player ${turn.toUpperCase()} turn`}</p>
       <p>{room && `You are playing as ${playerMove}`}</p>
+      <p>{`Lobby ${lobby?.players ? lobby?.players.length : 0  }/2`}</p>
+    {room && <div className="board">
+      {lobby?.gameState.map((row, index) => {
+        return <button className="square" disabled={false} key={index} onClick={onHandleClick} id={index.toString()}>
+          <span className="letter">
+            {row}
+          </span>
+        </button>
+      })}
+    </div>}
+     
 
       <div className="input">
         <>
-          {room ? 
+          {room  ? 
           <>
           <div>
             <Input value={room} isReadOnly />
@@ -131,7 +123,7 @@ const App : React.FC =()=> {
           :
           <>
           <div>
-            <Input onChange={e => setRoomInput(e.target.value)} />
+            <Input  onChange={e => setRoomInput(e.target.value)} />
             </div>
           <div>
             <Button onClick={onSocketJoinRoom} ml={2}>Join room</Button>

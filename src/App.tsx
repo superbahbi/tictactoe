@@ -39,13 +39,7 @@ const App : React.FC =()=> {
   const [playerMove, setPlayerMove] = React.useState("");
 
   const { hasCopied, onCopy } = useClipboard(room)
-  const [red100, blue200] = useToken(
-    // the key within the theme, in this case `theme.colors`
-    'colors',
-    // the subkey(s), resolving to `theme.colors.red.100`
-    ['red.100', 'blue.200'],
-    // a single fallback or fallback array matching the length of the previous arg
-  )
+
 
   const onHandleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     let id = e.currentTarget.id;
@@ -76,10 +70,10 @@ const App : React.FC =()=> {
 
   const onSocketMakeRoom = () => {
     const id = Math.random().toString(36).substr(2, 9);
-    setRoom(socket.id)
+    setRoom(id)
     setPlayerMove("x")
     setTurn("x")
-    socket.emit("join", socket.id);
+    socket.emit("join", id);
   }
 
   const onSocketJoinRoom = () => {
@@ -89,14 +83,11 @@ const App : React.FC =()=> {
   }
 
   useEffect((): (() => void) => {
-    console.log(ENDPOINT)
     const newSocket = socketIOClient(ENDPOINT);
-    console.log(newSocket)
     setSocket(newSocket);
     newSocket.on("onMessage", data => {
       setTurn(data.turn);
       setBoard(data.board);
-      console.log(data)
     });
     return () => newSocket.disconnect();
   }, []);
@@ -114,6 +105,7 @@ const App : React.FC =()=> {
       <h1 className="title">Tic Tac Toe MMO</h1>
       <h3>{winner && `Player ${winner} wins`}</h3>
       {/* <p> {room && `Player ${turn.toUpperCase()} turn`}</p> */}
+      <p>Lobby 0/2</p>
       <div className="board">
         {board.map((row, index) => {
           return <button className="square" disabled={false} key={index} onClick={onHandleClick} id={index.toString()}>

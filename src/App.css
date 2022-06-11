@@ -45,6 +45,8 @@
   font-size: 5rem;
   height: 100%;
   color: rgb(75, 74, 74);
+  /* animation: jello-horizontal 2s both; */
+  animation: pop 0.3s linear 1;
 }
 
 .input {
@@ -52,4 +54,56 @@
   grid-template-columns: auto auto auto;
   grid-gap: 1px;
   padding-top: 1rem;
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(1);
+    border-color: #ddd;
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+    border-color: #333;
+  }
+}
+
+@keyframes jello-horizontal {
+  0% {
+    transform: scale3d(1, 1, 1);
+  }
+
+  30% {
+    transform: scale3d(1.25, 0.75, 1);
+  }
+
+  40% {
+    transform: scale3d(0.75, 1.25, 1);
+  }
+
+  50% {
+    transform: scale3d(1.15, 0.85, 1);
+  }
+
+  65% {
+    transform: scale3d(0.95, 1.05, 1);
+  }
+
+  75% {
+    transform: scale3d(1.05, 0.95, 1);
+  }
+
+  100% {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes pop {
+  50% {
+    transform: scale(1.5);
+  }
 }

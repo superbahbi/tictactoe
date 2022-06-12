@@ -11,7 +11,7 @@ import useSound from 'use-sound';
 
 
 const popUpOff = require("../src/sounds/pop-up-off.mp3");
-const ENDPOINT: any = "http://localhost:3001";
+const ENDPOINT: any = process.env.REACT_APP_SOCKET_URL;
 const defaultBoard = ["", "", "", "", "", "", "", "", ""];
 
 type lobbyType = {

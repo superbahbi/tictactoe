@@ -60,6 +60,23 @@ io.on("connection", socket => {
         })
         console.log(chalk.green(socket.id + ' ==== joined room ' + id));   
     });
+    socket.on('newGame', id => {
+        console.log(id)
+        rooms.forEach(r => { 
+            if (r.room === id) {
+                // Sending the rooms to the client
+                r.gameState = ["", "", "", "", "", "", "", "", ""];
+                socket.emit('updateBoard', r);
+                Array.from(socket.rooms)
+                .filter(it => it !== socket.id)
+                .forEach(id => {
+                    socket.to(id).emit('updateBoard', r, function (err, success) {
+                    });
+                });
+            }
+        })
+        console.log(chalk.green(socket.id + ' ==== reseted the game ' + id));   
+    });
     socket.on("lobbyData", message => {
         Array.from(socket.rooms)
             .filter(it => it !== socket.id)

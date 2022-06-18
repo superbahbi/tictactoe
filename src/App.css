@@ -56,6 +56,13 @@
   padding-top: 1rem;
 }
 
+.reset {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 1px;
+  padding-top: 1rem;
+}
+
 @keyframes bounce {
   0% {
     transform: scale(1);

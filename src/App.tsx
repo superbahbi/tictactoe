@@ -75,9 +75,24 @@ const App: React.FC = () => {
     <div className="app">
       <h1 className="title">Tic Tac Toe Online</h1>
       <h3>{lobby?.winner && `Player ${lobby.winner} wins`}</h3>
-      <p> {room && `Player ${turn.toUpperCase()} turn`}</p>
-      <p>{room && `You are playing as ${playerMove}`}</p>
-      <p>{room && `Lobby ${lobby?.players ? lobby?.players.length : 0}/2`}</p>
+
+      {room && (
+        <div className="info">
+          <div>
+            <p>{`Lobby ${lobby?.players ? lobby?.players.length : 0}/2`}</p>
+          </div>
+          <div>
+            <p>
+              {lobby?.players.length === 2 &&
+                `${
+                  playerMove === turn
+                    ? `It's your turn to move`
+                    : `It's your opponent's turn`
+                }`}
+            </p>
+          </div>
+        </div>
+      )}
       {room && (
         <div className="board">
           {lobby?.gameState.map((row, index) => {
